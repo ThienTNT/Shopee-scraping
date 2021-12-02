@@ -53,4 +53,34 @@ def extract_record(item):
     return result
 
 
+def run_main(search_term):
+    driver = webdriver.Chrome()
+    records = []        # For future development
+    count = 0           # Count the number of products
+    url = get_url(search_term)
+
+    for page in range(2):
+        driver.get(url.format(page))
+        driver.execute_script("document.body.style.zoom='25%'")
+        driver.execute_script("window.scrollTo(0, document.body.scrollHeight)")
+        time.sleep(15)      # Wait for page to load
+        soup = BeautifulSoup(driver.page_source, 'html.parser')
+        results = soup.find_all('div', {'class': 'col-xs-2-4 shopee-search-item-result__item'})
+        print(len(results))
+
+        for item in results:
+            record = extract_record(item)
+            count += 1
+            if record:
+                with open('ShopeeText.txt', 'a', encoding='utf-8') as f:
+                    f.write(f"Product's name: \t{record[0]}\n")
+                    f.write(f"Product's price: \t{record[1]}\n")
+                    f.write(f"Product's sale: \t{record[2]}\n")
+                    f.write(f"Product's location: \t{record[3]}\n")
+                    f.write(f"Product's url: \t{record[4]}\n")
+                    f.write(f"Print {count} time.\n\n")
+                records.append(extract_record(item))
+    driver.close()
+
+
 print("Code done!!!")
