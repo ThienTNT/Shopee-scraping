@@ -61,9 +61,10 @@ def run_main(search_term):
 
     for page in range(2):
         driver.get(url.format(page))
+        time.sleep(10)      # Wait for page to load
         driver.execute_script("document.body.style.zoom='25%'")
         driver.execute_script("window.scrollTo(0, document.body.scrollHeight)")
-        time.sleep(15)      # Wait for page to load
+        time.sleep(10)      # Wait for page to resize
         soup = BeautifulSoup(driver.page_source, 'html.parser')
         results = soup.find_all('div', {'class': 'col-xs-2-4 shopee-search-item-result__item'})
         print(len(results))
@@ -82,5 +83,10 @@ def run_main(search_term):
                 records.append(extract_record(item))
     driver.close()
 
+
+with open('ShopeeText.txt', 'w') as fi:
+    fi.write('')
+search_box = input("Enter product's name: ")
+run_main(search_box)
 
 print("Code done!!!")
